@@ -1,0 +1,22 @@
+import cv2
+import numpy as np
+
+# algorithm is good in finding differences, highlighting motion
+# using webcam for video feed, if video file paste path of video or 0 to use builtin webcam or 1 for external webcam
+# cap = cv2.VideoCapture('/Users/Chevre/PycharmProjects/autonomous_rc_car/video/Movement/skateboardmovement.mp4.mpg')
+cap = cv2.VideoCapture(0)
+
+fgbg = cv2.createBackgroundSubtractorMOG2()
+
+while True:
+    ret, frame = cap.read()
+    fgmask = fgbg.apply(frame)
+    cv2.imshow('original', frame)
+    cv2.imshow('fg', fgmask)
+
+    k = cv2.waitKey(30) & 0xff
+    if k == 27:
+        break
+
+cap.release()
+destroyAllWindows()

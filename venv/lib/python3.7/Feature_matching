@@ -1,0 +1,31 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# matplotlib displays in rgb and cv displays in bgr so changing the parameters on the end will cause artifacts, changing the 0 to 1 will give same false positives
+img1 = cv2.imread(
+    '/Users/Chevre/PycharmProjects/autonomous_rc_car/images/Original_files/FeatureMatching/RaspberrypiTop.jpg', 0)
+img2 = cv2.imread(
+    '/Users/Chevre/PycharmProjects/autonomous_rc_car/images/Original_files/FeatureMatching/Raspberry3dprinterboardGlasses.jpg',
+    0)
+
+orb = cv2.ORB_create()
+# keypoints and descriptors
+kp1, des1 = orb.detectAndCompute(img1, None)
+kp2, des2 = orb.detectAndCompute(img1, None)
+
+bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+# sorting based on distance
+matches = bf.match(des1, des2)
+# sorted for most likely a match to unlikely
+matches = sorted(matches, key=lambda x: x.distance)
+# to high points and it will find false positives so its a parameter that has to be monitered
+img3 = cv2.drawMatches(img1, kp1, img2, kp2, matches[:10], None, flags=2)
+plt.imshow(img3)
+plt.show()
+
+cv2.waitKey(0)
+
+destroyAllWindows()
+
+# matplotlib displays in rgb and cv displays in bgr so changing the parameters on the end will cause artifacts
